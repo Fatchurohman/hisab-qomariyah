@@ -191,6 +191,12 @@
       border-radius: 8px;
     }
 
+    .data-item.full-width {
+      grid-column: span 2;
+      background: rgba(0, 242, 254, 0.05);
+      border: 1px solid rgba(0, 242, 254, 0.2);
+    }
+
     .data-item span {
       display: block;
       color: var(--text-muted);
@@ -253,6 +259,12 @@
       <div id="statusBadge" class="status-badge"></div>
       
       <div class="data-grid">
+        <!-- Kotak Waktu Ijtima' -->
+        <div class="data-item full-width">
+          <span><i class="fa-solid fa-moon"></i> Waktu Ijtima' (Konjungsi):</span>
+          <strong id="resIjtima" style="color: var(--accent-cyan);">-</strong>
+        </div>
+
         <div class="data-item">
           <span>Terbenam Matahari:</span>
           <strong id="resSunset">-</strong>
@@ -278,8 +290,62 @@
   </footer>
 
   <script>
-    // Set Tanggal Otomatis Hari Ini
     document.getElementById('inputDate').valueAsDate = new Date();
+
+    // Fungsi Pembantu Konversi Tanggal ke Julian Day
+    function toJulianDay(dObj) {
+      return (dObj.getTime() / 86400000) + 2440587.5;
+    }
+
+    // Fungsi Menghitung Beda Bujur Ekliptika Bulan & Matahari (Elongasi Bujur)
+    function getEclipticDiff(jd) {
+      const D = jd - 2451545.0;
+      const g = (357.529 + 0.98560028 * D) % 360;
+      const q = (280.459 + 0.98564736 * D) % 360;
+      const L_sun = (q + 1.915 * Math.sin(g * Math.PI / 180) + 0.020 * Math.sin(2 * g * Math.PI / 180)) % 360;
+
+      const L_moon = (218.316 + 13.176396 * D) % 360;
+      const M_moon = (134.963 + 13.064993 * D) % 360;
+      const moonLon = L_moon + 6.289 * Math.sin(M_moon * Math.PI / 180);
+
+      let diff = (moonLon - L_sun) % 360;
+      if (diff < -180) diff += 360;
+      if (diff > 180) diff -= 360;
+      return diff;
+    }
+
+    // Fungsi Mencari Jam Ijtima' dengan Iterasi Presisi (Newton-Raphson Method)
+    function calculateIjtimaTime(targetDateVal) {
+      let baseDate = new Date(targetDateVal + 'T00:00:00Z');
+      let jd = toJulianDay(baseDate);
+
+      // Cari perkiraan kasar jam ijtima' dalam rentang 48 jam
+      let bestJd = jd;
+      let minDiff = 999;
+      for (let hour = -12; hour <= 36; hour += 0.5) {
+        let testJd = jd + (hour / 24);
+        let diff = Math.abs(getEclipticDiff(testJd));
+        if (diff < minDiff) {
+          minDiff = diff;
+          bestJd = testJd;
+        }
+      }
+
+      // Refinement / Penyempurnaan hingga ketelitian menit
+      for (let i = 0; i < 10; i++) {
+        let diff = getEclipticDiff(bestJd);
+        // Kecepatan relatif bulan terhadap matahari ~ 0.508 derajat per jam
+        let hourCorrection = diff / 0.508;
+        bestJd -= (hourCorrection / 24);
+        if (Math.abs(hourCorrection) < 0.001) break; 
+      }
+
+      // Convert Julian Day kembali ke Waktu WIB (UTC+7)
+      const ijtimaMs = (bestJd - 2440587.5) * 86400000;
+      const ijtimaDate = new Date(ijtimaMs);
+      
+      return ijtimaDate;
+    }
 
     function hitungkanHisab() {
       const dateVal = document.getElementById('inputDate').value;
@@ -292,19 +358,22 @@
         return;
       }
 
-      // 1. Hitung Julian Day Number dari tanggal Masehi
-      const d = new Date(dateVal + 'T12:00:00Z');
-      const timeMs = d.getTime();
-      const julianDay = (timeMs / 86400000) + 2440587.5;
-      const D = julianDay - 2451545.0; // Hari sejak J2000.0
+      // 1. Hitung Waktu Ijtima'
+      const ijtimaDateObj = calculateIjtimaTime(dateVal);
+      const optionsDate = { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'Asia/Jakarta' };
+      const optionsTime = { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'Asia/Jakarta' };
+      
+      const ijtimaFormatted = `${ijtimaDateObj.toLocaleDateString('id-ID', optionsDate)}, jam ${ijtimaDateObj.toLocaleTimeString('id-ID', optionsTime)} WIB`;
 
-      // 2. Algoritma Hisab Astronomis Ringkas (Akurat & Standalone)
-      // Posisi Matahari
+      // 2. Hitung Parameter Sunset & Hilal
+      const d = new Date(dateVal + 'T12:00:00Z');
+      const julianDay = toJulianDay(d);
+      const D = julianDay - 2451545.0;
+
       const g = (357.529 + 0.98560028 * D) % 360;
       const q = (280.459 + 0.98564736 * D) % 360;
       const L_sun = (q + 1.915 * Math.sin(g * Math.PI / 180) + 0.020 * Math.sin(2 * g * Math.PI / 180)) % 360;
       
-      // Waktu Maghrib Perkiraan (Lokal WIB = UTC+7)
       const latRad = lat * Math.PI / 180;
       const sunDec = Math.asin(Math.sin(23.439 * Math.PI / 180) * Math.sin(L_sun * Math.PI / 180));
       const hourAngle = Math.acos(-Math.tan(latRad) * Math.tan(sunDec));
@@ -314,20 +383,15 @@
       const sunsetSec = Math.floor((((sunsetHours % 1) * 60) % 1) * 60);
       const sunsetFormatted = `${Math.floor(sunsetHours).toString().padStart(2, '0')}:${sunsetMin.toString().padStart(2, '0')}:${sunsetSec.toString().padStart(2, '0')} WIB`;
 
-      // Posisi Bulan Ringkas saat Maghrib
       const L_moon = (218.316 + 13.176396 * D) % 360;
       const M_moon = (134.963 + 13.064993 * D) % 360;
       const F_moon = (93.272 + 13.229350 * D) % 360;
 
-      // Bujur & Lintang Ekliptika Bulan
       const moonLon = L_moon + 6.289 * Math.sin(M_moon * Math.PI / 180);
       const moonLat = 5.128 * Math.sin(F_moon * Math.PI / 180);
 
-      // Tinggi Hilal (Altitude) dan Elongasi
       let moonAlt = (moonLon - L_sun) * Math.sin((90 - Math.abs(lat)) * Math.PI / 180) + (moonLat * 0.8);
       let elongation = Math.abs(moonLon - L_sun);
-
-      // Normalisasi nilai agar realistis & akurat
       if (elongation > 180) elongation = 360 - elongation;
 
       // 3. Evaluasi Kriteria
@@ -343,6 +407,7 @@
       }
 
       // 4. Output Tampilan
+      document.getElementById('resIjtima').innerText = ijtimaFormatted;
       document.getElementById('resSunset').innerText = sunsetFormatted;
       document.getElementById('resAlt').innerText = moonAlt.toFixed(2) + "°";
       document.getElementById('resElongation').innerText = elongation.toFixed(2) + "°";
@@ -358,7 +423,7 @@
         badge.innerHTML = `<i class="fa-solid fa-circle-check"></i> BESOK MASUK TANGGAL 1 BULAN BARU<br><small style="font-weight:normal">${reason}</small>`;
       } else {
         badge.className = "status-badge status-fail";
-        badge.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> BELUM MASUK TANGGAL 1 BARU<br><small style="font-weight:normal">${reason}</small>`;
+        badge.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> BELUM MASUK TANGGAL 1 BULAN BARU<br><small style="font-weight:normal">${reason}</small>`;
       }
     }
   </script>
