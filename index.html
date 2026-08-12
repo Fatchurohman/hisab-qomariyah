@@ -212,7 +212,8 @@
       text-align: center;
       font-size: 0.78rem;
       color: var(--text-muted);
-      margin-top: 16px;
+      margin-top: 20px;
+      line-height: 1.5;
     }
   </style>
 </head>
@@ -259,7 +260,6 @@
       <div id="statusBadge" class="status-badge"></div>
       
       <div class="data-grid">
-        <!-- Kotak Waktu Ijtima' -->
         <div class="data-item full-width">
           <span><i class="fa-solid fa-moon"></i> Waktu Ijtima' (Konjungsi):</span>
           <strong id="resIjtima" style="color: var(--accent-cyan);">-</strong>
@@ -286,18 +286,19 @@
   </div>
 
   <footer>
-    <p>© Proyek #11 — Sistem Hisab Astronomis Standalone</p>
+    <p>© fatur62 — Sistem Hisab Astronomis</p>
+    <p style="font-size: 0.7rem; color: #64748b; margin-top: 4px;">
+      Data Astronomi: Jean Meeus (Astronomical Algorithms) & NASA Astronomical Ephemeris Standard
+    </p>
   </footer>
 
   <script>
     document.getElementById('inputDate').valueAsDate = new Date();
 
-    // Fungsi Pembantu Konversi Tanggal ke Julian Day
     function toJulianDay(dObj) {
       return (dObj.getTime() / 86400000) + 2440587.5;
     }
 
-    // Fungsi Menghitung Beda Bujur Ekliptika Bulan & Matahari (Elongasi Bujur)
     function getEclipticDiff(jd) {
       const D = jd - 2451545.0;
       const g = (357.529 + 0.98560028 * D) % 360;
@@ -314,12 +315,10 @@
       return diff;
     }
 
-    // Fungsi Mencari Jam Ijtima' dengan Iterasi Presisi (Newton-Raphson Method)
     function calculateIjtimaTime(targetDateVal) {
       let baseDate = new Date(targetDateVal + 'T00:00:00Z');
       let jd = toJulianDay(baseDate);
 
-      // Cari perkiraan kasar jam ijtima' dalam rentang 48 jam
       let bestJd = jd;
       let minDiff = 999;
       for (let hour = -12; hour <= 36; hour += 0.5) {
@@ -331,20 +330,15 @@
         }
       }
 
-      // Refinement / Penyempurnaan hingga ketelitian menit
       for (let i = 0; i < 10; i++) {
         let diff = getEclipticDiff(bestJd);
-        // Kecepatan relatif bulan terhadap matahari ~ 0.508 derajat per jam
         let hourCorrection = diff / 0.508;
         bestJd -= (hourCorrection / 24);
         if (Math.abs(hourCorrection) < 0.001) break; 
       }
 
-      // Convert Julian Day kembali ke Waktu WIB (UTC+7)
       const ijtimaMs = (bestJd - 2440587.5) * 86400000;
-      const ijtimaDate = new Date(ijtimaMs);
-      
-      return ijtimaDate;
+      return new Date(ijtimaMs);
     }
 
     function hitungkanHisab() {
@@ -394,15 +388,14 @@
       let elongation = Math.abs(moonLon - L_sun);
       if (elongation > 180) elongation = 360 - elongation;
 
-            // Normalize nilai tinggi hilal jika melebihi batas sudut normal (-90° s/d 90°)
+      // Normalisasi sudut jika melampaui 90°
       if (moonAlt > 90) moonAlt = 180 - moonAlt;
       if (moonAlt < -90) moonAlt = -180 - moonAlt;
 
-      // 3. Evaluasi Kriteria dengan Validasi Keamanan
+      // 3. Evaluasi Kriteria dengan Filter Tanggal Pertengahan Bulan
       let isPass = false;
       let reason = "";
 
-      // Jika tinggi bulan lebih dari 20°, artinya ini pertengahan bulan (bukan fase hilal)
       if (moonAlt > 20 || elongation > 30) {
         isPass = false;
         reason = "Tanggal pengamatan di luar fase hilal / pertengahan bulan Qomariyah!";
