@@ -298,85 +298,84 @@
     <p>© Proyek #11 — Sistem Hisab Astronomis Otomatis</p>
   </footer>
 
-  <script>
-    // Set Tanggal Hari Ini secara otomatis saat awal load
+    <script>
+    // Set Tanggal Hari Ini secara otomatis
     document.getElementById('inputDate').valueAsDate = new Date();
 
     function hitungkanHisab() {
-      const dateVal = document.getElementById('inputDate').value;
-      const lat = parseFloat(document.getElementById('inputLat').value);
-      const lon = parseFloat(document.getElementById('inputLon').value);
-      const criterion = document.getElementById('inputCriterion').value;
-
-      if (!dateVal || isNaN(lat) || isNaN(lon)) {
-        alert("Silakan lengkapi semua data input!");
-        return;
-      }
-
-      // 1. Buat Objek Lokasi & Waktu (WIB / UTC+7 default Indonesia)
-      const dateObj = new Date(dateVal + 'T12:00:00');
-      const observer = new Astronomy.Observer(lat, lon, 0);
-
-      // 2. Cari Waktu Sunset (Matahari Terbenam)
-      const sunsetObj = Astronomy.SearchRiseSet('Sun', observer, -1, dateObj, 1);
-      if (!sunsetObj) {
-        alert("Gagal menghitung waktu terbenam matahari.");
-        return;
-      }
-
-      const sunsetTime = sunsetObj.date;
-
-      // 3. Hitung Posisi Bulan saat Sunset
-      const moonEquator = Astronomy.Equator('Moon', sunsetTime, observer, true, true);
-      const moonHorizon = Astronomy.Horizon(sunsetTime, observer, moonEquator.ra, moonEquator.dec, 'Refracted');
-      
-      const sunEquator = Astronomy.Equator('Sun', sunsetTime, observer, true, true);
-      
-      // Ketinggian Bulan & Elongasi
-      const moonAltitude = moonHorizon.altitude; // derajat
-      const elongation = Astronomy.AngleBetween(moonEquator, sunEquator); // derajat
-
-      // 4. Analisis Kriteria
-      let is1stQomariyah = false;
-      let reasonText = "";
-
-      if (criterion === "MABIMS") {
-        if (moonAltitude >= 3.0 && elongation >= 6.4) {
-          is1stQomariyah = true;
-          reasonText = "Memenuhi Kriteria MABIMS Baru";
-        } else {
-          is1stQomariyah = false;
-          reasonText = "Belum Memenuhi Kriteria MABIMS (Istikmal/30 Hari)";
+      try {
+        // Cek apakah library Astronomy sudah terload
+        if (typeof Astronomy === 'undefined') {
+          alert("Error: Library Astronomy tidak terload. Pastikan ada internet!");
+          return;
         }
-      } else if (criterion === "WUJUDUL_HILAL") {
-        if (moonAltitude > 0) {
-          is1stQomariyah = true;
-          reasonText = "Memenuhi Kriteria Wujudul Hilal";
-        } else {
-          is1stQomariyah = false;
-          reasonText = "Bulan Masih Di Bawah Ufuk";
+
+        const dateVal = document.getElementById('inputDate').value;
+        const lat = parseFloat(document.getElementById('inputLat').value);
+        const lon = parseFloat(document.getElementById('inputLon').value);
+        const criterion = document.getElementById('inputCriterion').value;
+
+        if (!dateVal || isNaN(lat) || isNaN(lon)) {
+          alert("Silakan lengkapi data input!");
+          return;
         }
-      }
 
-      // 5. Tampilkan ke UI
-      document.getElementById('resSunset').innerText = sunsetTime.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB';
-      document.getElementById('resAlt').innerText = moonAltitude.toFixed(2) + '°';
-      document.getElementById('resElongation').innerText = elongation.toFixed(2) + '°';
-      document.getElementById('resHilalState').innerText = moonAltitude > 0 ? "Di Atas Ufuk" : "Di Bawah Ufuk";
+        const dateObj = new Date(dateVal + 'T12:00:00');
+        const observer = new Astronomy.Observer(lat, lon, 0);
 
-      const badge = document.getElementById('statusBadge');
-      const container = document.getElementById('resultContainer');
-      
-      container.style.display = "block";
+        // Cari Waktu Sunset
+        const sunsetObj = Astronomy.SearchRiseSet('Sun', observer, -1, dateObj, 1);
+        if (!sunsetObj) {
+          alert("Gagal menghitung waktu terbenam matahari.");
+          return;
+        }
 
-      if (is1stQomariyah) {
-        badge.className = "status-badge status-pass";
-        badge.innerHTML = `<i class="fa-solid fa-circle-check"></i> BESOK MASUK TANGGAL 1 BUKAN BARU<br><small style="font-weight:normal">${reasonText}</small>`;
-      } else {
-        badge.className = "status-badge status-fail";
-        badge.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> BELUM MASUK TANGGAL 1 BARU<br><small style="font-weight:normal">${reasonText}</small>`;
+        const sunsetTime = sunsetObj.date;
+
+        // Hitung Posisi Bulan
+        const moonEquator = Astronomy.Equator('Moon', sunsetTime, observer, true, true);
+        const moonHorizon = Astronomy.Horizon(sunsetTime, observer, moonEquator.ra, moonEquator.dec, 'Refracted');
+        const sunEquator = Astronomy.Equator('Sun', sunsetTime, observer, true, true);
+        
+        const moonAltitude = moonHorizon.altitude;
+        const elongation = Astronomy.AngleBetween(moonEquator, sunEquator);
+
+        // Kriteria
+        let is1stQomariyah = false;
+        let reasonText = "";
+
+        if (criterion === "MABIMS") {
+          is1stQomariyah = (moonAltitude >= 3.0 && elongation >= 6.4);
+          reasonText = is1stQomariyah ? "Memenuhi Kriteria MABIMS Baru" : "Belum Memenuhi MABIMS (Tinggi < 3° atau Elongasi < 6.4°)";
+        } else {
+          is1stQomariyah = (moonAltitude > 0);
+          reasonText = is1stQomariyah ? "Memenuhi Kriteria Wujudul Hilal" : "Bulan Masih Di Bawah Ufuk";
+        }
+
+        // Tampilkan Hasil
+        document.getElementById('resSunset').innerText = sunsetTime.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB';
+        document.getElementById('resAlt').innerText = moonAltitude.toFixed(2) + '°';
+        document.getElementById('resElongation').innerText = elongation.toFixed(2) + '°';
+        document.getElementById('resHilalState').innerText = moonAltitude > 0 ? "Di Atas Ufuk" : "Di Bawah Ufuk";
+
+        const badge = document.getElementById('statusBadge');
+        const container = document.getElementById('resultContainer');
+        
+        container.style.display = "block"; // INI PERINTAH UNTUK MEMUNCULKAN KOTAKNYA
+
+        if (is1stQomariyah) {
+          badge.className = "status-badge status-pass";
+          badge.innerHTML = `<i class="fa-solid fa-circle-check"></i> BESOK MASUK TANGGAL 1<br><small>${reasonText}</small>`;
+        } else {
+          badge.className = "status-badge status-fail";
+          badge.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> BELUM MASUK TANGGAL 1<br><small>${reasonText}</small>`;
+        }
+
+      } catch (err) {
+        alert("Terjadi kesalahan sistem: " + err.message);
       }
     }
   </script>
+
 </body>
 </html>
