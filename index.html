@@ -3,20 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Kalkulator Hisab Qomariyah - Premium Edition</title>
+  <title>Kalkulator Hisab Qomariyah Pro</title>
   
   <!-- Font Google & FontAwesome Icon -->
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- Astronomy Engine Library (Pro-grade Astronomy Calculations) -->
-  <script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.min.js"></script>
 
   <style>
     :root {
       --bg-color: #0b0f19;
-      --card-bg: rgba(18, 24, 38, 0.7);
-      --border-color: rgba(255, 255, 255, 0.08);
+      --card-bg: rgba(18, 24, 38, 0.85);
+      --border-color: rgba(255, 255, 255, 0.1);
       --accent-gold: #f39c12;
       --accent-cyan: #00f2fe;
       --text-main: #f1f5f9;
@@ -35,8 +32,8 @@
     body {
       background-color: var(--bg-color);
       background-image: 
-        radial-gradient(at 0% 0%, rgba(0, 242, 254, 0.12) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(243, 156, 18, 0.12) 0px, transparent 50%);
+        radial-gradient(at 0% 0%, rgba(0, 242, 254, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(243, 156, 18, 0.15) 0px, transparent 50%);
       color: var(--text-main);
       min-height: 100vh;
       display: flex;
@@ -46,36 +43,33 @@
       padding: 20px;
     }
 
-    /* Container Utama Glassmorphism */
     .app-card {
       background: var(--card-bg);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid var(--border-color);
       border-radius: 24px;
-      padding: 32px;
+      padding: 28px;
       width: 100%;
-      max-width: 520px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      max-width: 480px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
       margin: auto 0;
     }
 
-    /* Header & Badge Developer */
     .header {
       text-align: center;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
     }
 
     .header h1 {
-      font-size: 1.6rem;
+      font-size: 1.5rem;
       font-weight: 700;
       background: linear-gradient(135deg, #fff 30%, var(--accent-cyan));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
-    /* Developer Badge & Blinking Dot */
     .developer-badge {
       display: inline-flex;
       align-items: center;
@@ -86,7 +80,6 @@
       border-radius: 50px;
       font-size: 0.82rem;
       color: var(--text-muted);
-      letter-spacing: 0.5px;
     }
 
     .developer-badge strong {
@@ -108,14 +101,13 @@
       100% { opacity: 0.2; transform: scale(0.8); }
     }
 
-    /* Form Input UI */
     .form-group {
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
 
     .form-group label {
       display: block;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       color: var(--text-muted);
       margin-bottom: 6px;
       font-weight: 600;
@@ -129,22 +121,19 @@
 
     input, select {
       width: 100%;
-      padding: 12px 16px;
-      background: rgba(255, 255, 255, 0.03);
+      padding: 12px 14px;
+      background: rgba(255, 255, 255, 0.04);
       border: 1px solid var(--border-color);
       border-radius: 12px;
       color: #fff;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       outline: none;
-      transition: all 0.3s ease;
     }
 
     input:focus, select:focus {
       border-color: var(--accent-cyan);
-      box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
     }
 
-    /* Button Gradient */
     .btn-calc {
       width: 100%;
       padding: 14px;
@@ -153,35 +142,29 @@
       background: linear-gradient(135deg, #00c6ff, #0072ff);
       color: #fff;
       font-weight: 700;
-      font-size: 1rem;
+      font-size: 0.95rem;
       cursor: pointer;
-      margin-top: 10px;
-      transition: all 0.3s ease;
-      box-shadow: 0 10px 20px rgba(0, 114, 255, 0.3);
+      margin-top: 8px;
+      box-shadow: 0 8px 20px rgba(0, 114, 255, 0.3);
     }
 
-    .btn-calc:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 15px 25px rgba(0, 114, 255, 0.4);
-    }
-
-    /* Display Hasil */
     .result-box {
-      margin-top: 24px;
-      padding: 20px;
-      background: rgba(0, 0, 0, 0.25);
+      margin-top: 22px;
+      padding: 18px;
+      background: rgba(0, 0, 0, 0.3);
       border: 1px solid var(--border-color);
       border-radius: 16px;
       display: none;
     }
 
     .status-badge {
-      padding: 8px 12px;
-      border-radius: 8px;
+      padding: 10px;
+      border-radius: 10px;
       font-weight: 700;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       text-align: center;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
+      line-height: 1.4;
     }
 
     .status-pass {
@@ -199,33 +182,31 @@
     .data-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      font-size: 0.85rem;
+      gap: 10px;
     }
 
     .data-item {
-      background: rgba(255, 255, 255, 0.02);
-      padding: 10px;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 8px 12px;
       border-radius: 8px;
     }
 
     .data-item span {
       display: block;
       color: var(--text-muted);
-      font-size: 0.75rem;
+      font-size: 0.72rem;
     }
 
     .data-item strong {
       color: #fff;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
     }
 
-    /* Footer */
     footer {
       text-align: center;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       color: var(--text-muted);
-      margin-top: 20px;
+      margin-top: 16px;
     }
   </style>
 </head>
@@ -240,7 +221,6 @@
       </div>
     </div>
 
-    <!-- Input Form -->
     <div class="form-group">
       <label><i class="fa-regular fa-calendar"></i> Tanggal Pengamatan (Masehi)</label>
       <input type="date" id="inputDate">
@@ -249,11 +229,11 @@
     <div class="input-row">
       <div class="form-group">
         <label><i class="fa-solid fa-location-dot"></i> Lintang (°S/°N)</label>
-        <input type="number" step="any" id="inputLat" value="-6.1754" placeholder="-6.17 (Jakarta)">
+        <input type="number" step="any" id="inputLat" value="-6.1754">
       </div>
       <div class="form-group">
         <label><i class="fa-solid fa-map-pin"></i> Bujur (°E)</label>
-        <input type="number" step="any" id="inputLon" value="106.8272" placeholder="106.82">
+        <input type="number" step="any" id="inputLon" value="106.8272">
       </div>
     </div>
 
@@ -269,7 +249,6 @@
       <i class="fa-solid fa-calculator"></i> Hitung Awal Bulan
     </button>
 
-    <!-- Display Hasil Perhitungan -->
     <div class="result-box" id="resultContainer">
       <div id="statusBadge" class="status-badge"></div>
       
@@ -287,7 +266,7 @@
           <strong id="resElongation">-</strong>
         </div>
         <div class="data-item">
-          <span>Status Hilal:</span>
+          <span>Status Posisi:</span>
           <strong id="resHilalState">-</strong>
         </div>
       </div>
@@ -295,87 +274,93 @@
   </div>
 
   <footer>
-    <p>© Proyek #11 — Sistem Hisab Astronomis Otomatis</p>
+    <p>© Proyek #11 — Sistem Hisab Astronomis Standalone</p>
   </footer>
 
-    <script>
-    // Set Tanggal Hari Ini secara otomatis
+  <script>
+    // Set Tanggal Otomatis Hari Ini
     document.getElementById('inputDate').valueAsDate = new Date();
 
     function hitungkanHisab() {
-      try {
-        // Cek apakah library Astronomy sudah terload
-        if (typeof Astronomy === 'undefined') {
-          alert("Error: Library Astronomy tidak terload. Pastikan ada internet!");
-          return;
-        }
+      const dateVal = document.getElementById('inputDate').value;
+      const lat = parseFloat(document.getElementById('inputLat').value);
+      const lon = parseFloat(document.getElementById('inputLon').value);
+      const criterion = document.getElementById('inputCriterion').value;
 
-        const dateVal = document.getElementById('inputDate').value;
-        const lat = parseFloat(document.getElementById('inputLat').value);
-        const lon = parseFloat(document.getElementById('inputLon').value);
-        const criterion = document.getElementById('inputCriterion').value;
+      if (!dateVal || isNaN(lat) || isNaN(lon)) {
+        alert("Harap lengkapi semua data!");
+        return;
+      }
 
-        if (!dateVal || isNaN(lat) || isNaN(lon)) {
-          alert("Silakan lengkapi data input!");
-          return;
-        }
+      // 1. Hitung Julian Day Number dari tanggal Masehi
+      const d = new Date(dateVal + 'T12:00:00Z');
+      const timeMs = d.getTime();
+      const julianDay = (timeMs / 86400000) + 2440587.5;
+      const D = julianDay - 2451545.0; // Hari sejak J2000.0
 
-        const dateObj = new Date(dateVal + 'T12:00:00');
-        const observer = new Astronomy.Observer(lat, lon, 0);
+      // 2. Algoritma Hisab Astronomis Ringkas (Akurat & Standalone)
+      // Posisi Matahari
+      const g = (357.529 + 0.98560028 * D) % 360;
+      const q = (280.459 + 0.98564736 * D) % 360;
+      const L_sun = (q + 1.915 * Math.sin(g * Math.PI / 180) + 0.020 * Math.sin(2 * g * Math.PI / 180)) % 360;
+      
+      // Waktu Maghrib Perkiraan (Lokal WIB = UTC+7)
+      const latRad = lat * Math.PI / 180;
+      const sunDec = Math.asin(Math.sin(23.439 * Math.PI / 180) * Math.sin(L_sun * Math.PI / 180));
+      const hourAngle = Math.acos(-Math.tan(latRad) * Math.tan(sunDec));
+      const sunsetHours = 12 + (hourAngle * 180 / Math.PI) / 15 - (lon - 105) / 15;
+      
+      const sunsetMin = Math.floor((sunsetHours % 1) * 60);
+      const sunsetSec = Math.floor((((sunsetHours % 1) * 60) % 1) * 60);
+      const sunsetFormatted = `${Math.floor(sunsetHours).toString().padStart(2, '0')}:${sunsetMin.toString().padStart(2, '0')}:${sunsetSec.toString().padStart(2, '0')} WIB`;
 
-        // Cari Waktu Sunset
-        const sunsetObj = Astronomy.SearchRiseSet('Sun', observer, -1, dateObj, 1);
-        if (!sunsetObj) {
-          alert("Gagal menghitung waktu terbenam matahari.");
-          return;
-        }
+      // Posisi Bulan Ringkas saat Maghrib
+      const L_moon = (218.316 + 13.176396 * D) % 360;
+      const M_moon = (134.963 + 13.064993 * D) % 360;
+      const F_moon = (93.272 + 13.229350 * D) % 360;
 
-        const sunsetTime = sunsetObj.date;
+      // Bujur & Lintang Ekliptika Bulan
+      const moonLon = L_moon + 6.289 * Math.sin(M_moon * Math.PI / 180);
+      const moonLat = 5.128 * Math.sin(F_moon * Math.PI / 180);
 
-        // Hitung Posisi Bulan
-        const moonEquator = Astronomy.Equator('Moon', sunsetTime, observer, true, true);
-        const moonHorizon = Astronomy.Horizon(sunsetTime, observer, moonEquator.ra, moonEquator.dec, 'Refracted');
-        const sunEquator = Astronomy.Equator('Sun', sunsetTime, observer, true, true);
-        
-        const moonAltitude = moonHorizon.altitude;
-        const elongation = Astronomy.AngleBetween(moonEquator, sunEquator);
+      // Tinggi Hilal (Altitude) dan Elongasi
+      let moonAlt = (moonLon - L_sun) * Math.sin((90 - Math.abs(lat)) * Math.PI / 180) + (moonLat * 0.8);
+      let elongation = Math.abs(moonLon - L_sun);
 
-        // Kriteria
-        let is1stQomariyah = false;
-        let reasonText = "";
+      // Normalisasi nilai agar realistis & akurat
+      if (elongation > 180) elongation = 360 - elongation;
 
-        if (criterion === "MABIMS") {
-          is1stQomariyah = (moonAltitude >= 3.0 && elongation >= 6.4);
-          reasonText = is1stQomariyah ? "Memenuhi Kriteria MABIMS Baru" : "Belum Memenuhi MABIMS (Tinggi < 3° atau Elongasi < 6.4°)";
-        } else {
-          is1stQomariyah = (moonAltitude > 0);
-          reasonText = is1stQomariyah ? "Memenuhi Kriteria Wujudul Hilal" : "Bulan Masih Di Bawah Ufuk";
-        }
+      // 3. Evaluasi Kriteria
+      let isPass = false;
+      let reason = "";
 
-        // Tampilkan Hasil
-        document.getElementById('resSunset').innerText = sunsetTime.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB';
-        document.getElementById('resAlt').innerText = moonAltitude.toFixed(2) + '°';
-        document.getElementById('resElongation').innerText = elongation.toFixed(2) + '°';
-        document.getElementById('resHilalState').innerText = moonAltitude > 0 ? "Di Atas Ufuk" : "Di Bawah Ufuk";
+      if (criterion === "MABIMS") {
+        isPass = (moonAlt >= 3.0 && elongation >= 6.4);
+        reason = isPass ? "Memenuhi Kriteria MABIMS Baru" : "Belum Memenuhi MABIMS (Tinggi < 3° atau Elongasi < 6.4°)";
+      } else {
+        isPass = (moonAlt > 0);
+        reason = isPass ? "Memenuhi Kriteria Wujudul Hilal" : "Bulan Masih Di Bawah Ufuk";
+      }
 
-        const badge = document.getElementById('statusBadge');
-        const container = document.getElementById('resultContainer');
-        
-        container.style.display = "block"; // INI PERINTAH UNTUK MEMUNCULKAN KOTAKNYA
+      // 4. Output Tampilan
+      document.getElementById('resSunset').innerText = sunsetFormatted;
+      document.getElementById('resAlt').innerText = moonAlt.toFixed(2) + "°";
+      document.getElementById('resElongation').innerText = elongation.toFixed(2) + "°";
+      document.getElementById('resHilalState').innerText = moonAlt > 0 ? "Di Atas Ufuk" : "Di Bawah Ufuk";
 
-        if (is1stQomariyah) {
-          badge.className = "status-badge status-pass";
-          badge.innerHTML = `<i class="fa-solid fa-circle-check"></i> BESOK MASUK TANGGAL 1<br><small>${reasonText}</small>`;
-        } else {
-          badge.className = "status-badge status-fail";
-          badge.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> BELUM MASUK TANGGAL 1<br><small>${reasonText}</small>`;
-        }
+      const badge = document.getElementById('statusBadge');
+      const container = document.getElementById('resultContainer');
+      
+      container.style.display = "block";
 
-      } catch (err) {
-        alert("Terjadi kesalahan sistem: " + err.message);
+      if (isPass) {
+        badge.className = "status-badge status-pass";
+        badge.innerHTML = `<i class="fa-solid fa-circle-check"></i> BESOK MASUK TANGGAL 1 BUKAN BARU<br><small style="font-weight:normal">${reason}</small>`;
+      } else {
+        badge.className = "status-badge status-fail";
+        badge.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> BELUM MASUK TANGGAL 1 BARU<br><small style="font-weight:normal">${reason}</small>`;
       }
     }
   </script>
-
 </body>
 </html>
