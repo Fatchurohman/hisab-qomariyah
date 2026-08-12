@@ -394,11 +394,19 @@
       let elongation = Math.abs(moonLon - L_sun);
       if (elongation > 180) elongation = 360 - elongation;
 
-      // 3. Evaluasi Kriteria
+            // Normalize nilai tinggi hilal jika melebihi batas sudut normal (-90° s/d 90°)
+      if (moonAlt > 90) moonAlt = 180 - moonAlt;
+      if (moonAlt < -90) moonAlt = -180 - moonAlt;
+
+      // 3. Evaluasi Kriteria dengan Validasi Keamanan
       let isPass = false;
       let reason = "";
 
-      if (criterion === "MABIMS") {
+      // Jika tinggi bulan lebih dari 20°, artinya ini pertengahan bulan (bukan fase hilal)
+      if (moonAlt > 20 || elongation > 30) {
+        isPass = false;
+        reason = "Tanggal pengamatan di luar fase hilal / pertengahan bulan Qomariyah!";
+      } else if (criterion === "MABIMS") {
         isPass = (moonAlt >= 3.0 && elongation >= 6.4);
         reason = isPass ? "Memenuhi Kriteria MABIMS Baru" : "Belum Memenuhi MABIMS (Tinggi < 3° atau Elongasi < 6.4°)";
       } else {
