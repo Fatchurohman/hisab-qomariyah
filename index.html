@@ -123,7 +123,6 @@
     .data-item span { display: block; color: var(--text-muted); font-size: 0.72rem; }
     .data-item strong { color: #fff; font-size: 0.88rem; }
 
-    /* Visualisasi Hilal Canvas */
     .moon-visual-box {
       grid-column: span 2; display: flex; flex-direction: column; align-items: center;
       background: rgba(255, 255, 255, 0.02); padding: 12px; border-radius: 12px; margin-top: 4px;
@@ -205,7 +204,6 @@
           <strong id="resAzimuth">-</strong>
         </div>
 
-        <!-- Visualisasi Bentuk Hilal -->
         <div class="moon-visual-box">
           <span style="font-size:0.75rem; color:var(--text-muted); margin-bottom:8px;">Simulasi Bentuk Hilal (Sinar Bulan)</span>
           <canvas id="moonCanvas" width="70" height="70"></canvas>
@@ -293,17 +291,26 @@
       ctx.beginPath(); ctx.arc(35 + shift, 35, 28, -Math.PI/2, Math.PI/2, false); ctx.fill();
     }
 
-    // Fungsi Deteksi Nama Bulan Hijriah Otomatis
+    // Array Nama Bulan Hijriah Baku
+    const HIJRI_MONTHS = [
+      "Muharram", "Safar", "Rabi'ul Awal", "Rabi'ul Akhir",
+      "Jumadil Awal", "Jumadil Akhir", "Rajab", "Sya'ban",
+      "Ramadhan", "Syawal", "Zulqa'dah", "Zulhijjah"
+    ];
+
     function getHijriMonthInfo(targetDate) {
-      try {
-        const formatter = new Intl.DateTimeFormat('id-ID-u-ca-islamic-umalqura', {
-          month: 'long',
-          year: 'numeric'
-        });
-        return formatter.format(targetDate);
-      } catch (e) {
-        return "Bulan Qomariyah Baru";
-      }
+      const jd = (targetDate.getTime() / 86400000) + 2440587.5;
+      const l = Math.floor(jd) - 1948440 + 10632;
+      const n = Math.floor((l - 1) / 10631);
+      const l1 = l - 10631 * n + 354;
+      const j = (Math.floor((10985 - l1) / 5316)) * (Math.floor((50 * l1) / 17719)) + (Math.floor(l1 / 5670)) * (Math.floor((43 * l1) / 15238));
+      const l2 = l1 - (Math.floor((30 - j) / 15)) * (Math.floor((17719 * j) / 50)) - (Math.floor(j / 30)) * (Math.floor((15238 * j) / 43)) + 29;
+      
+      const month = Math.floor((24 * l2) / 709);
+      const year = 30 * n + j - 30;
+
+      const monthName = HIJRI_MONTHS[(month - 1) % 12] || "Rabi'ul Awal";
+      return `${monthName} ${year} H`;
     }
 
     function hitungkanHisab() {
@@ -365,7 +372,6 @@
         reason = isPass ? "Memenuhi Kriteria Wujudul Hilal Lokal" : "Bulan Masih Di Bawah Ufuk";
       }
 
-      // Konversi Tanggal Masehi & Deteksi Nama Bulan Qomariyah
       const obsDate = new Date(dateVal + 'T12:00:00Z');
       const optionsDay = { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' };
 
@@ -377,10 +383,9 @@
       dayAfterNext.setDate(obsDate.getDate() + 2);
       const dayAfterNextStr = dayAfterNext.toLocaleDateString('id-ID', optionsDay);
 
-      // Ambil Nama Bulan Hijriah dari H+1
+      // Ambil Nama Bulan Murni
       const hijriMonthName = getHijriMonthInfo(nextDay);
 
-      // Output Tampilan
       document.getElementById('resIjtima').innerText = ijtimaFormatted;
       document.getElementById('resSunset').innerText = sunsetFormatted;
       document.getElementById('resAlt').innerText = moonAlt.toFixed(2) + "°";
