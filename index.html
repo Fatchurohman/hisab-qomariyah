@@ -291,28 +291,6 @@
       ctx.beginPath(); ctx.arc(35 + shift, 35, 28, -Math.PI/2, Math.PI/2, false); ctx.fill();
     }
 
-    // Array Nama Bulan Hijriah Baku
-    const HIJRI_MONTHS = [
-      "Muharram", "Safar", "Rabi'ul Awal", "Rabi'ul Akhir",
-      "Jumadil Awal", "Jumadil Akhir", "Rajab", "Sya'ban",
-      "Ramadhan", "Syawal", "Zulqa'dah", "Zulhijjah"
-    ];
-
-    function getHijriMonthInfo(targetDate) {
-      const jd = (targetDate.getTime() / 86400000) + 2440587.5;
-      const l = Math.floor(jd) - 1948440 + 10632;
-      const n = Math.floor((l - 1) / 10631);
-      const l1 = l - 10631 * n + 354;
-      const j = (Math.floor((10985 - l1) / 5316)) * (Math.floor((50 * l1) / 17719)) + (Math.floor(l1 / 5670)) * (Math.floor((43 * l1) / 15238));
-      const l2 = l1 - (Math.floor((30 - j) / 15)) * (Math.floor((17719 * j) / 50)) - (Math.floor(j / 30)) * (Math.floor((15238 * j) / 43)) + 29;
-      
-      const month = Math.floor((24 * l2) / 709);
-      const year = 30 * n + j - 30;
-
-      const monthName = HIJRI_MONTHS[(month - 1) % 12] || "Rabi'ul Awal";
-      return `${monthName} ${year} H`;
-    }
-
     function hitungkanHisab() {
       const dateVal = document.getElementById('inputDate').value;
       const lat = parseFloat(document.getElementById('inputLat').value);
@@ -372,6 +350,7 @@
         reason = isPass ? "Memenuhi Kriteria Wujudul Hilal Lokal" : "Bulan Masih Di Bawah Ufuk";
       }
 
+      // Konversi Penanggalan Keputusan Masehi Eksplisit
       const obsDate = new Date(dateVal + 'T12:00:00Z');
       const optionsDay = { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' };
 
@@ -382,9 +361,6 @@
       const dayAfterNext = new Date(obsDate);
       dayAfterNext.setDate(obsDate.getDate() + 2);
       const dayAfterNextStr = dayAfterNext.toLocaleDateString('id-ID', optionsDay);
-
-      // Ambil Nama Bulan Murni
-      const hijriMonthName = getHijriMonthInfo(nextDay);
 
       document.getElementById('resIjtima').innerText = ijtimaFormatted;
       document.getElementById('resSunset').innerText = sunsetFormatted;
@@ -401,7 +377,7 @@
       if (isPass) {
         badge.className = "status-badge status-pass";
         badge.innerHTML = `
-          <i class="fa-solid fa-circle-check"></i> MULAI NANTI MALAM SUDAH TANGGAL 1 ${hijriMonthName.toUpperCase()}<br>
+          <i class="fa-solid fa-circle-check"></i> MULAI NANTI MALAM SUDAH MASUK TANGGAL 1 BULAN BARU<br>
           <small style="font-weight:normal; display:block; margin-top:4px;">
             Awal bulan Qomariyah dimulai saat Maghrib nanti. Hari pertama Masehi: <strong>${nextDayStr}</strong>.<br>
             <em>(${reason})</em>
@@ -409,9 +385,9 @@
       } else {
         badge.className = "status-badge status-fail";
         badge.innerHTML = `
-          <i class="fa-solid fa-circle-xmark"></i> NANTI MALAM BELUM MASUK TANGGAL 1 ${hijriMonthName.toUpperCase()}<br>
+          <i class="fa-solid fa-circle-xmark"></i> NANTI MALAM BELUM MASUK TANGGAL 1 BULAN BARU<br>
           <small style="font-weight:normal; display:block; margin-top:4px;">
-            Umur bulan digenapkan (Istikmal) 30 hari. Tanggal 1 ${hijriMonthName} baru dimulai saat Maghrib besok (<strong>${dayAfterNextStr}</strong>).<br>
+            Umur bulan digenapkan (Istikmal) 30 hari. Tanggal 1 baru dimulai saat Maghrib besok (<strong>${dayAfterNextStr}</strong>).<br>
             <em>(${reason})</em>
           </small>`;
       }
