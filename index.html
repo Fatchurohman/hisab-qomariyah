@@ -312,19 +312,21 @@
       const q = (280.459 + 0.98564736 * D) % 360;
       const L_sun = (q + 1.915 * Math.sin(g * Math.PI / 180) + 0.020 * Math.sin(2 * g * Math.PI / 180)) % 360;
       
-      // Kalkulasi Terbenam Matahari Presisi (BMKG / Standard Falak)
+      // Kalkulasi Terbenam Matahari Presisi Standar BMKG / Kemenag
       const latRad = lat * Math.PI / 180;
       const sunDec = Math.asin(Math.sin(23.44 * Math.PI / 180) * Math.sin(L_sun * Math.PI / 180));
       
+      const varY = Math.tan((23.44 / 2) * Math.PI / 180) ** 2;
+      const gRad = g * Math.PI / 180;
+      const qRad = q * Math.PI / 180;
+      const eotMin = 4 * (varY * Math.sin(2 * qRad) - 2 * 0.0167 * Math.sin(gRad) + 4 * 0.0167 * varY * Math.sin(gRad) * Math.cos(2 * qRad) - 0.5 * (varY ** 2) * Math.sin(4 * qRad)) * (180 / Math.PI);
+
       const h0Rad = -0.8333 * Math.PI / 180;
       let cosHA = (Math.sin(h0Rad) - Math.sin(latRad) * Math.sin(sunDec)) / (Math.cos(latRad) * Math.cos(sunDec));
       cosHA = Math.min(Math.max(cosHA, -1), 1);
       
       const hourAngleDeg = Math.acos(cosHA) * 180 / Math.PI;
-      
-      // Waktu lokal WIB (Sudut Bujur WIB = 105°) + Koreksi Perataan Waktu (EoT)
-      const eotMinutes = (q - L_sun);
-      const sunsetHours = 12 + (hourAngleDeg / 15) - ((lon - 105) / 15) - (eotMinutes / 60);
+      const sunsetHours = 12 + (hourAngleDeg / 15) - ((lon - 105) / 15) - (eotMin / 60);
       
       const sunsetMin = Math.floor((sunsetHours % 1) * 60);
       const sunsetSec = Math.floor((((sunsetHours % 1) * 60) % 1) * 60);
