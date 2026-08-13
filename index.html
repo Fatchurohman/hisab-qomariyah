@@ -168,11 +168,10 @@
     <button class="btn-gps" onclick="getLocation()"><i class="fa-solid fa-crosshairs"></i> Gunakan Lokasi Saya (GPS)</button>
 
     <div class="form-group" style="margin-top: 12px;">
-      <label><i class="fa-solid fa-scale-balanced"></i> Kriteria Hilal</label>
+      <label><i class="fa-solid fa-scale-balanced"></i> Kriteria Hilal (Sistem Lokal Indonesia)</label>
       <select id="inputCriterion">
         <option value="MABIMS">MABIMS Baru (Tinggi 3°, Elongasi 6.4°)</option>
         <option value="WUJUDUL_HILAL">Wujudul Hilal Lokal (Tinggi > 0°)</option>
-        <option value="KHGT">KHGT Muhammadiyah (Global: Imkanurrukyat 5°/8°)</option>
       </select>
     </div>
 
@@ -227,7 +226,6 @@
   <script>
     document.getElementById('inputDate').valueAsDate = new Date();
 
-    // 1. Deteksi GPS Otomatis
     function getLocation() {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
@@ -276,7 +274,6 @@
       return new Date((bestJd - 2440587.5) * 86400000);
     }
 
-    // Gambar Visual Hilal pada Canvas
     function drawMoonVisual(elongation, alt) {
       const canvas = document.getElementById('moonCanvas');
       const ctx = canvas.getContext('2d');
@@ -294,6 +291,19 @@
       let shift = Math.max(2, 28 - (elongation * 1.5));
       ctx.fillStyle = '#000';
       ctx.beginPath(); ctx.arc(35 + shift, 35, 28, -Math.PI/2, Math.PI/2, false); ctx.fill();
+    }
+
+    // Fungsi Deteksi Nama Bulan Hijriah Otomatis
+    function getHijriMonthInfo(targetDate) {
+      try {
+        const formatter = new Intl.DateTimeFormat('id-ID-u-ca-islamic-umalqura', {
+          month: 'long',
+          year: 'numeric'
+        });
+        return formatter.format(targetDate);
+      } catch (e) {
+        return "Bulan Qomariyah Baru";
+      }
     }
 
     function hitungkanHisab() {
@@ -353,23 +363,9 @@
       } else if (criterion === "WUJUDUL_HILAL") {
         isPass = (moonAlt > 0);
         reason = isPass ? "Memenuhi Kriteria Wujudul Hilal Lokal" : "Bulan Masih Di Bawah Ufuk";
-      } else if (criterion === "KHGT") {
-        let estGlobalAlt = moonAlt + 4.5;
-        let estGlobalElong = elongation + 1.5;
-
-        if (moonAlt >= 5.0 && elongation >= 8.0) {
-          isPass = true;
-          reason = "Memenuhi KHGT Global (Hilal Terlihat di Wilayah Lokal & Global)";
-        } else if (estGlobalAlt >= 5.0 && estGlobalElong >= 8.0) {
-          isPass = true;
-          reason = "Memenuhi KHGT Global (Terpenuhi di Belahan Bumi Barat)";
-        } else {
-          isPass = false;
-          reason = "Belum Memenuhi KHGT (Hilal belum capai 5°/8° secara Global)";
-        }
       }
 
-      // Konversi Penanggalan Keputusan Masehi
+      // Konversi Tanggal Masehi & Deteksi Nama Bulan Qomariyah
       const obsDate = new Date(dateVal + 'T12:00:00Z');
       const optionsDay = { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' };
 
@@ -380,6 +376,9 @@
       const dayAfterNext = new Date(obsDate);
       dayAfterNext.setDate(obsDate.getDate() + 2);
       const dayAfterNextStr = dayAfterNext.toLocaleDateString('id-ID', optionsDay);
+
+      // Ambil Nama Bulan Hijriah dari H+1
+      const hijriMonthName = getHijriMonthInfo(nextDay);
 
       // Output Tampilan
       document.getElementById('resIjtima').innerText = ijtimaFormatted;
@@ -397,7 +396,7 @@
       if (isPass) {
         badge.className = "status-badge status-pass";
         badge.innerHTML = `
-          <i class="fa-solid fa-circle-check"></i> MULAI NANTI MALAM SUDAH TANGGAL 1<br>
+          <i class="fa-solid fa-circle-check"></i> MULAI NANTI MALAM SUDAH TANGGAL 1 ${hijriMonthName.toUpperCase()}<br>
           <small style="font-weight:normal; display:block; margin-top:4px;">
             Awal bulan Qomariyah dimulai saat Maghrib nanti. Hari pertama Masehi: <strong>${nextDayStr}</strong>.<br>
             <em>(${reason})</em>
@@ -405,15 +404,14 @@
       } else {
         badge.className = "status-badge status-fail";
         badge.innerHTML = `
-          <i class="fa-solid fa-circle-xmark"></i> NANTI MALAM BELUM MASUK TANGGAL 1<br>
+          <i class="fa-solid fa-circle-xmark"></i> NANTI MALAM BELUM MASUK TANGGAL 1 ${hijriMonthName.toUpperCase()}<br>
           <small style="font-weight:normal; display:block; margin-top:4px;">
-            Umur bulan digenapkan (Istikmal) 30 hari. Tanggal 1 baru dimulai saat Maghrib besok (<strong>${dayAfterNextStr}</strong>).<br>
+            Umur bulan digenapkan (Istikmal) 30 hari. Tanggal 1 ${hijriMonthName} baru dimulai saat Maghrib besok (<strong>${dayAfterNextStr}</strong>).<br>
             <em>(${reason})</em>
           </small>`;
       }
     }
 
-    // Download Laporan Gambar PNG
     function downloadReport() {
       html2canvas(document.getElementById("captureArea")).then(canvas => {
         let link = document.createElement('a');
