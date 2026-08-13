@@ -110,8 +110,8 @@
     }
 
     .status-badge {
-      padding: 10px; border-radius: 10px; font-weight: 700; font-size: 0.88rem;
-      text-align: center; margin-bottom: 14px; line-height: 1.4;
+      padding: 12px; border-radius: 12px; font-weight: 700; font-size: 0.88rem;
+      text-align: center; margin-bottom: 14px; line-height: 1.5;
     }
     .status-pass { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid var(--success); }
     .status-fail { background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid var(--danger); }
@@ -354,7 +354,6 @@
         isPass = (moonAlt > 0);
         reason = isPass ? "Memenuhi Kriteria Wujudul Hilal Lokal" : "Bulan Masih Di Bawah Ufuk";
       } else if (criterion === "KHGT") {
-        // Logika KHGT: Estimasi keterlihatan hilal secara global (wilayah belahan bumi barat)
         let estGlobalAlt = moonAlt + 4.5;
         let estGlobalElong = elongation + 1.5;
 
@@ -370,6 +369,19 @@
         }
       }
 
+      // Konversi Penanggalan Keputusan Masehi
+      const obsDate = new Date(dateVal + 'T12:00:00Z');
+      const optionsDay = { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' };
+
+      const nextDay = new Date(obsDate);
+      nextDay.setDate(obsDate.getDate() + 1);
+      const nextDayStr = nextDay.toLocaleDateString('id-ID', optionsDay);
+
+      const dayAfterNext = new Date(obsDate);
+      dayAfterNext.setDate(obsDate.getDate() + 2);
+      const dayAfterNextStr = dayAfterNext.toLocaleDateString('id-ID', optionsDay);
+
+      // Output Tampilan
       document.getElementById('resIjtima').innerText = ijtimaFormatted;
       document.getElementById('resSunset').innerText = sunsetFormatted;
       document.getElementById('resAlt').innerText = moonAlt.toFixed(2) + "°";
@@ -384,10 +396,20 @@
 
       if (isPass) {
         badge.className = "status-badge status-pass";
-        badge.innerHTML = `<i class="fa-solid fa-circle-check"></i> BESOK MASUK TANGGAL 1 BULAN BARU<br><small style="font-weight:normal">${reason}</small>`;
+        badge.innerHTML = `
+          <i class="fa-solid fa-circle-check"></i> MULAI NANTI MALAM SUDAH TANGGAL 1<br>
+          <small style="font-weight:normal; display:block; margin-top:4px;">
+            Awal bulan Qomariyah dimulai saat Maghrib nanti. Hari pertama Masehi: <strong>${nextDayStr}</strong>.<br>
+            <em>(${reason})</em>
+          </small>`;
       } else {
         badge.className = "status-badge status-fail";
-        badge.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> BELUM MASUK TANGGAL 1 BULAN BARU<br><small style="font-weight:normal">${reason}</small>`;
+        badge.innerHTML = `
+          <i class="fa-solid fa-circle-xmark"></i> NANTI MALAM BELUM MASUK TANGGAL 1<br>
+          <small style="font-weight:normal; display:block; margin-top:4px;">
+            Umur bulan digenapkan (Istikmal) 30 hari. Tanggal 1 baru dimulai saat Maghrib besok (<strong>${dayAfterNextStr}</strong>).<br>
+            <em>(${reason})</em>
+          </small>`;
       }
     }
 
