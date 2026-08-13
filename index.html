@@ -325,7 +325,7 @@
       const hourAngle = Math.acos(Math.min(Math.max(cosHourAngle, -1), 1));
       
       // Waktu Terbenam Matahari Presisi lokal WIB
-      const sunsetHours = 12 + (hourAngle * 180 / Math.PI) / 15 - (lon - 105) / 15 - eot;
+      const sunsetHours = 12 + (hourAngle * 180 / Math.PI) / 15 - (lon - 105) / 15 + eot;
       
       const sunsetMin = Math.floor((sunsetHours % 1) * 60);
       const sunsetSec = Math.floor((((sunsetHours % 1) * 60) % 1) * 60);
