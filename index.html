@@ -15,13 +15,14 @@
   <style>
     :root {
       --bg-color: #0b0f19;
-      --card-bg: rgba(18, 24, 38, 0.85);
+      --card-bg: rgba(18, 24, 38, 0.88);
       --border-color: rgba(255, 255, 255, 0.1);
       --accent-gold: #f39c12;
       --accent-cyan: #00f2fe;
       --text-main: #f1f5f9;
       --text-muted: #94a3b8;
       --success: #10b981;
+      --warning: #f59e0b;
       --danger: #ef4444;
     }
 
@@ -47,25 +48,25 @@
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid var(--border-color);
       border-radius: 24px;
-      padding: 28px;
+      padding: 26px;
       width: 100%;
-      max-width: 480px;
+      max-width: 520px;
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
       margin: auto 0;
     }
 
-    .header { text-align: center; margin-bottom: 20px; }
+    .header { text-align: center; margin-bottom: 18px; }
     .header h1 {
       font-size: 1.5rem; font-weight: 700;
       background: linear-gradient(135deg, #fff 30%, var(--accent-cyan));
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .developer-badge {
       display: inline-flex; align-items: center; gap: 8px;
       background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-color);
-      padding: 6px 14px; border-radius: 50px; font-size: 0.82rem; color: var(--text-muted);
+      padding: 5px 14px; border-radius: 50px; font-size: 0.8rem; color: var(--text-muted);
     }
     .developer-badge strong { color: var(--accent-gold); }
 
@@ -80,54 +81,112 @@
       100% { opacity: 0.2; transform: scale(0.8); }
     }
 
-    .form-group { margin-bottom: 14px; }
-    .form-group label { display: block; font-size: 0.82rem; color: var(--text-muted); margin-bottom: 6px; font-weight: 600; }
+    .hijri-box {
+      background: rgba(243, 156, 18, 0.06);
+      border: 1px solid rgba(243, 156, 18, 0.25);
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+    }
+    .hijri-box-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent-gold);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
 
-    .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px; font-weight: 600; }
+
+    .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .input-row-hijri { display: grid; grid-template-columns: 1.6fr 1fr; gap: 10px; }
 
     input, select {
-      width: 100%; padding: 12px 14px; background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border-color); border-radius: 12px;
-      color: #fff; font-size: 0.9rem; outline: none;
+      width: 100%; padding: 10px 12px; background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-color); border-radius: 10px;
+      color: #fff; font-size: 0.88rem; outline: none; transition: border 0.2s;
     }
+    input:focus, select:focus { border-color: var(--accent-cyan); }
+    select option { background: #121826; color: #fff; }
+
+    .date-nav-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 8px;
+      align-items: center;
+    }
+    .btn-step {
+      padding: 10px 12px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      color: var(--text-main);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-step:hover { background: rgba(0, 242, 254, 0.15); border-color: var(--accent-cyan); }
 
     .btn-gps {
-      width: 100%; padding: 8px; margin-top: 6px; background: rgba(0, 242, 254, 0.1);
+      width: 100%; padding: 8px; margin-top: 4px; margin-bottom: 12px;
+      background: rgba(0, 242, 254, 0.1);
       border: 1px solid var(--accent-cyan); border-radius: 8px; color: var(--accent-cyan);
       font-size: 0.78rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
+      transition: all 0.2s;
     }
+    .btn-gps:hover { background: rgba(0, 242, 254, 0.2); }
 
     .btn-calc {
-      width: 100%; padding: 14px; border: none; border-radius: 12px;
+      width: 100%; padding: 13px; border: none; border-radius: 12px;
       background: linear-gradient(135deg, #00c6ff, #0072ff); color: #fff;
-      font-weight: 700; font-size: 0.95rem; cursor: pointer; margin-top: 10px;
+      font-weight: 700; font-size: 0.95rem; cursor: pointer; margin-top: 6px;
       box-shadow: 0 8px 20px rgba(0, 114, 255, 0.3);
+      transition: transform 0.15s;
     }
+    .btn-calc:active { transform: scale(0.98); }
 
     .result-box {
-      margin-top: 20px; padding: 18px; background: rgba(0, 0, 0, 0.3);
+      margin-top: 18px; padding: 16px; background: rgba(0, 0, 0, 0.32);
       border: 1px solid var(--border-color); border-radius: 16px; display: none;
     }
 
+    .target-banner {
+      text-align: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--accent-gold);
+      background: rgba(243, 156, 18, 0.12);
+      border: 1px solid rgba(243, 156, 18, 0.3);
+      padding: 6px 10px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      letter-spacing: 0.3px;
+    }
+
     .status-badge {
-      padding: 12px; border-radius: 12px; font-weight: 700; font-size: 0.88rem;
-      text-align: center; margin-bottom: 14px; line-height: 1.5;
+      padding: 14px; border-radius: 12px; font-weight: 700; font-size: 0.86rem;
+      text-align: center; margin-bottom: 14px; line-height: 1.55;
     }
     .status-pass { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid var(--success); }
     .status-fail { background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid var(--danger); }
+    .status-warn { background: rgba(245, 158, 11, 0.15); color: var(--warning); border: 1px solid var(--warning); }
 
     .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
-    .data-item { background: rgba(255, 255, 255, 0.03); padding: 8px 12px; border-radius: 8px; }
+    .data-item { background: rgba(255, 255, 255, 0.03); padding: 9px 12px; border-radius: 8px; }
     .data-item.full-width { grid-column: span 2; background: rgba(0, 242, 254, 0.05); border: 1px solid rgba(0, 242, 254, 0.2); }
-    .data-item span { display: block; color: var(--text-muted); font-size: 0.72rem; }
-    .data-item strong { color: #fff; font-size: 0.88rem; }
+    .data-item span { display: block; color: var(--text-muted); font-size: 0.72rem; margin-bottom: 2px; }
+    .data-item strong { color: #fff; font-size: 0.85rem; }
 
     .moon-visual-box {
       grid-column: span 2; display: flex; flex-direction: column; align-items: center;
       background: rgba(255, 255, 255, 0.02); padding: 12px; border-radius: 12px; margin-top: 4px;
     }
-    canvas#moonCanvas { background: #000; border-radius: 50%; box-shadow: 0 0 15px rgba(255, 255, 255, 0.1); }
+    canvas#moonCanvas { background: #05070c; border-radius: 50%; box-shadow: 0 0 15px rgba(255, 255, 255, 0.08); }
 
     .btn-download {
       width: 100%; padding: 10px; margin-top: 14px; background: rgba(243, 156, 18, 0.15);
@@ -149,9 +208,44 @@
       </div>
     </div>
 
+    <!-- FITUR BARU: Pemilih Otomatis Bulan & Tahun Hijriyah -->
+    <div class="hijri-box">
+      <div class="hijri-box-title">
+        <i class="fa-solid fa-star-and-crescent"></i> Pilih Target Awal Bulan Hijriyah (Otomatis Cari Hari ke-29)
+      </div>
+      <div class="input-row-hijri">
+        <div>
+          <label style="font-size:0.74rem; color:var(--text-muted); display:block; margin-bottom:4px;">Target 1 Bulan Baru</label>
+          <select id="selectHijriMonth" onchange="autoSetObservationDate()">
+            <option value="1">1 Muharram</option>
+            <option value="2">1 Shafar</option>
+            <option value="3">1 Rabi'ul Awal</option>
+            <option value="4">1 Rabi'ul Akhir</option>
+            <option value="5">1 Jumadil Awal</option>
+            <option value="6">1 Jumadil Akhir</option>
+            <option value="7">1 Rajab</option>
+            <option value="8">1 Sya'ban</option>
+            <option value="9" selected>1 Ramadhan</option>
+            <option value="10">1 Syawal (Idul Fitri)</option>
+            <option value="11">1 Dzulqa'dah</option>
+            <option value="12">1 Dzulhijjah</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:0.74rem; color:var(--text-muted); display:block; margin-bottom:4px;">Tahun Hijriyah (H)</label>
+          <input type="number" id="inputHijriYear" value="1447" min="1350" max="1550" onchange="autoSetObservationDate()">
+        </div>
+      </div>
+    </div>
+
+    <!-- Tanggal Pengamatan Masehi dilengkapi tombol geser H-1 / H+1 -->
     <div class="form-group">
-      <label><i class="fa-regular fa-calendar"></i> Tanggal Pengamatan (Masehi)</label>
-      <input type="date" id="inputDate">
+      <label><i class="fa-regular fa-calendar-check"></i> Tanggal Pengamatan (Masehi) — <span style="color:var(--accent-cyan); font-weight:400;">Otomatis Terisi / Bisa Diubah</span></label>
+      <div class="date-nav-row">
+        <button type="button" class="btn-step" onclick="shiftDate(-1)" title="Mundur 1 Hari"><i class="fa-solid fa-chevron-left"></i> H-1</button>
+        <input type="date" id="inputDate" onchange="hitungkanHisab()">
+        <button type="button" class="btn-step" onclick="shiftDate(1)" title="Maju 1 Hari">H+1 <i class="fa-solid fa-chevron-right"></i></button>
+      </div>
     </div>
 
     <div class="input-row">
@@ -166,11 +260,11 @@
     </div>
     <button class="btn-gps" onclick="getLocation()"><i class="fa-solid fa-crosshairs"></i> Gunakan Lokasi Saya (GPS)</button>
 
-    <div class="form-group" style="margin-top: 12px;">
-      <label><i class="fa-solid fa-scale-balanced"></i> Kriteria Hilal (Sistem Lokal Indonesia)</label>
-      <select id="inputCriterion">
-        <option value="MABIMS">MABIMS Baru (Tinggi 3°, Elongasi 6.4°)</option>
-        <option value="WUJUDUL_HILAL">Wujudul Hilal Lokal (Tinggi > 0°)</option>
+    <div class="form-group">
+      <label><i class="fa-solid fa-scale-balanced"></i> Kriteria Penentuan Awal Bulan</label>
+      <select id="inputCriterion" onchange="hitungkanHisab()">
+        <option value="MABIMS">MABIMS Baru (Tinggi Mar'i ≥ 3°, Elongasi ≥ 6.4°)</option>
+        <option value="WUJUDUL_HILAL">Wujudul Hilal (Ijtimak Qablal Ghurub & Tinggi > 0°)</option>
       </select>
     </div>
 
@@ -179,50 +273,275 @@
     </button>
 
     <div class="result-box" id="resultContainer">
+      <div class="target-banner" id="targetBanner">HISAB PENENTUAN AWAL BULAN</div>
       <div id="statusBadge" class="status-badge"></div>
       
       <div class="data-grid">
         <div class="data-item full-width">
-          <span><i class="fa-solid fa-moon"></i> Waktu Ijtima' (Konjungsi):</span>
+          <span><i class="fa-solid fa-moon"></i> Waktu Ijtimak (Konjungsi Geosentris):</span>
           <strong id="resIjtima" style="color: var(--accent-cyan);">-</strong>
         </div>
 
         <div class="data-item">
-          <span>Terbenam Matahari:</span>
+          <span>Terbenam Matahari (Ghurub):</span>
           <strong id="resSunset">-</strong>
         </div>
         <div class="data-item">
-          <span>Tinggi Hilal (Alt):</span>
+          <span>Tinggi Hilal (Mar'i / Haqiqi):</span>
           <strong id="resAlt">-</strong>
         </div>
         <div class="data-item">
-          <span>Sudut Elongasi:</span>
+          <span>Sudut Elongasi (Geosentris):</span>
           <strong id="resElongation">-</strong>
         </div>
         <div class="data-item">
-          <span>Posisi Kompas:</span>
+          <span>Azimuth & Posisi Hilal:</span>
           <strong id="resAzimuth">-</strong>
         </div>
 
         <div class="moon-visual-box">
-          <span style="font-size:0.75rem; color:var(--text-muted); margin-bottom:8px;">Simulasi Bentuk Hilal (Sinar Bulan)</span>
-          <canvas id="moonCanvas" width="70" height="70"></canvas>
+          <span style="font-size:0.75rem; color:var(--text-muted); margin-bottom:8px;">Simulasi Bentuk & Kemiringan Hilal Saat Ghurub</span>
+          <canvas id="moonCanvas" width="76" height="76"></canvas>
         </div>
       </div>
 
-      <button class="btn-download" onclick="downloadReport()"><i class="fa-solid fa-download"></i> Unduh Laporan Gambar</button>
+      <button class="btn-download" id="btnDownload" onclick="downloadReport()"><i class="fa-solid fa-download"></i> Unduh Laporan Gambar</button>
     </div>
   </div>
 
   <footer>
     <p>© fatur62 — Sistem Hisab Astronomis V2</p>
     <p style="font-size: 0.7rem; color: #64748b; margin-top: 4px;">
-      Data Astronomi: Jean Meeus (Astronomical Algorithms) & NASA Astronomical Ephemeris Standard
+      Algoritma: Jean Meeus (Astronomical Algorithms) & Transformasi Ekuatorial-Horizontal Presisi
     </p>
   </footer>
 
   <script>
-    document.getElementById('inputDate').valueAsDate = new Date();
+    const DEG2RAD = Math.PI / 180;
+    const RAD2DEG = 180 / Math.PI;
+
+    const HIJRI_MONTH_NAMES = {
+      1: "Muharram", 2: "Shafar", 3: "Rabi'ul Awal", 4: "Rabi'ul Akhir",
+      5: "Jumadil Awal", 6: "Jumadil Akhir", 7: "Rajab", 8: "Sya'ban",
+      9: "Ramadhan", 10: "Syawal", 11: "Dzulqa'dah", 12: "Dzulhijjah"
+    };
+
+    function norm360(deg) {
+      return ((deg % 360) + 360) % 360;
+    }
+
+    function norm180(deg) {
+      let d = norm360(deg);
+      if (d > 180) d -= 360;
+      return d;
+    }
+
+    function getTimezoneInfo(lon) {
+      if (lon >= 127.5) return { offset: 9, name: 'WIT', tzString: 'Asia/Jayapura' };
+      if (lon >= 112.5) return { offset: 8, name: 'WITA', tzString: 'Asia/Makassar' };
+      return { offset: 7, name: 'WIB', tzString: 'Asia/Jakarta' };
+    }
+
+    function toJulianDay(dObj) {
+      return (dObj.getTime() / 86400000) + 2440587.5;
+    }
+
+    function fromJulianDay(jd) {
+      return new Date((jd - 2440587.5) * 86400000);
+    }
+
+    // Posisi Ekuatorial & Ekliptika Matahari (Jean Meeus)
+    function getSunPosition(jd) {
+      const T = (jd - 2451545.0) / 36525.0;
+      const L0 = norm360(280.46646 + 36000.76983 * T + 0.0003032 * T * T);
+      const M = norm360(357.52911 + 35999.05029 * T - 0.0001537 * T * T);
+      const Mrad = M * DEG2RAD;
+
+      const C = (1.914602 - 0.004817 * T - 0.000014 * T * T) * Math.sin(Mrad)
+              + (0.019993 - 0.000101 * T) * Math.sin(2 * Mrad)
+              + 0.000289 * Math.sin(3 * Mrad);
+
+      const sunLon = norm360(L0 + C);
+      const omega = norm360(125.04 - 1934.136 * T);
+      const lambda = norm360(sunLon - 0.00569 - 0.00478 * Math.sin(omega * DEG2RAD));
+      const eps = 23.439291 - 0.0130042 * T;
+
+      const lamRad = lambda * DEG2RAD;
+      const epsRad = eps * DEG2RAD;
+
+      const ra = norm360(Math.atan2(Math.cos(epsRad) * Math.sin(lamRad), Math.cos(lamRad)) * RAD2DEG);
+      const dec = Math.asin(Math.sin(epsRad) * Math.sin(lamRad)) * RAD2DEG;
+
+      const y = Math.tan(epsRad / 2) ** 2;
+      const L0rad = L0 * DEG2RAD;
+      const e = 0.016708634 - 0.000042037 * T;
+      const eot = 4 * RAD2DEG * (
+        y * Math.sin(2 * L0rad)
+        - 2 * e * Math.sin(Mrad)
+        + 4 * e * y * Math.sin(Mrad) * Math.cos(2 * L0rad)
+        - 0.5 * y * y * Math.sin(4 * L0rad)
+        - 1.25 * e * e * Math.sin(2 * Mrad)
+      );
+
+      return { lon: lambda, lat: 0, ra, dec, eps, eot };
+    }
+
+    // Posisi Ekliptika & Ekuatorial Bulan (Jean Meeus Bab 47)
+    function getMoonPosition(jd) {
+      const T = (jd - 2451545.0) / 36525.0;
+
+      const Lp = norm360(218.3164477 + 481267.88123421 * T - 0.0015786 * T * T);
+      const D  = norm360(297.8501921 + 445267.1114034 * T - 0.0018819 * T * T);
+      const M  = norm360(357.5291092 + 35999.0502909 * T - 0.0001536 * T * T);
+      const Mp = norm360(134.9633964 + 477198.8675055 * T + 0.0087414 * T * T);
+      const F  = norm360(93.2720950  + 483202.0175233 * T - 0.0036539 * T * T);
+
+      const Dr = D * DEG2RAD, Mr = M * DEG2RAD, Mpr = Mp * DEG2RAD, Fr = F * DEG2RAD;
+
+      const dLon = 6.288774 * Math.sin(Mpr)
+                 + 1.274027 * Math.sin(2 * Dr - Mpr)
+                 + 0.658314 * Math.sin(2 * Dr)
+                 + 0.213618 * Math.sin(2 * Mpr)
+                 - 0.185116 * Math.sin(Mr)
+                 - 0.114332 * Math.sin(2 * Fr)
+                 + 0.058793 * Math.sin(2 * Dr - 2 * Mpr)
+                 + 0.057066 * Math.sin(2 * Dr - Mr - Mpr)
+                 + 0.053322 * Math.sin(2 * Dr + Mpr)
+                 + 0.045758 * Math.sin(2 * Dr - Mr)
+                 - 0.040923 * Math.sin(Mr - Mpr)
+                 - 0.034720 * Math.sin(Dr)
+                 - 0.030383 * Math.sin(Mr + Mpr);
+
+      const dLat = 5.128122 * Math.sin(Fr)
+                 + 0.280602 * Math.sin(Mpr + Fr)
+                 + 0.277693 * Math.sin(Mpr - Fr)
+                 + 0.173237 * Math.sin(2 * Dr - Fr)
+                 + 0.055413 * Math.sin(2 * Dr - Mpr + Fr)
+                 + 0.046271 * Math.sin(2 * Dr - Mpr - Fr)
+                 + 0.032573 * Math.sin(2 * Dr + Fr);
+
+      const distKm = 385000.56
+                   - 20905.355 * Math.cos(Mpr)
+                   - 3699.111  * Math.cos(2 * Dr - Mpr)
+                   - 2955.968  * Math.cos(2 * Dr)
+                   - 569.925   * Math.cos(2 * Mpr);
+
+      const lon = norm360(Lp + dLon);
+      const lat = dLat;
+      const hp = Math.asin(6378.14 / distKm) * RAD2DEG;
+
+      const eps = 23.439291 - 0.0130042 * T;
+      const lonRad = lon * DEG2RAD;
+      const latRad = lat * DEG2RAD;
+      const epsRad = eps * DEG2RAD;
+
+      const ra = norm360(Math.atan2(
+        Math.sin(lonRad) * Math.cos(epsRad) - Math.tan(latRad) * Math.sin(epsRad),
+        Math.cos(lonRad)
+      ) * RAD2DEG);
+
+      const dec = Math.asin(
+        Math.sin(latRad) * Math.cos(epsRad) + Math.cos(latRad) * Math.sin(epsRad) * Math.sin(lonRad)
+      ) * RAD2DEG;
+
+      return { lon, lat, ra, dec, distKm, hp };
+    }
+
+    function equatorialToHorizontal(jd, raDeg, decDeg, latDeg, lonDeg) {
+      const T = (jd - 2451545.0) / 36525.0;
+      const gmst = norm360(280.46061837 + 360.98564736629 * (jd - 2451545.0) + 0.000387933 * T * T);
+      const lst = norm360(gmst + lonDeg);
+      const ha = norm180(lst - raDeg);
+
+      const latRad = latDeg * DEG2RAD;
+      const decRad = decDeg * DEG2RAD;
+      const haRad  = ha * DEG2RAD;
+
+      const sinAlt = Math.sin(latRad) * Math.sin(decRad) + Math.cos(latRad) * Math.cos(decRad) * Math.cos(haRad);
+      const alt = Math.asin(Math.min(Math.max(sinAlt, -1), 1)) * RAD2DEG;
+
+      const y = -Math.sin(haRad);
+      const x = Math.tan(decRad) * Math.cos(latRad) - Math.sin(latRad) * Math.cos(haRad);
+      const az = norm360(Math.atan2(y, x) * RAD2DEG);
+
+      return { alt, az, ha };
+    }
+
+    function getEclipticDiff(jd) {
+      const sun = getSunPosition(jd);
+      const moon = getMoonPosition(jd);
+      return norm180(moon.lon - sun.lon);
+    }
+
+    // Refine JD Konjungsi dengan Newton-Raphson dari estimasi awal JD
+    function refineConjunctionJd(approxJd) {
+      let bestJd = approxJd;
+      for (let i = 0; i < 15; i++) {
+        let diff = getEclipticDiff(bestJd);
+        let dayCorrection = diff / 12.190749;
+        bestJd -= dayCorrection;
+        if (Math.abs(dayCorrection) < 1e-7) break;
+      }
+      return bestJd;
+    }
+
+    // Mencari Waktu Ijtimak dari input Tanggal Masehi sembarang
+    function calculateIjtimaTime(sunsetJd) {
+      let bestJd = sunsetJd;
+      let minAbsDiff = 999;
+
+      for (let step = -15; step <= 15; step += 0.25) {
+        let testJd = sunsetJd + step;
+        let diff = Math.abs(getEclipticDiff(testJd));
+        if (diff < minAbsDiff) {
+          minAbsDiff = diff;
+          bestJd = testJd;
+        }
+      }
+      return refineConjunctionJd(bestJd);
+    }
+
+    // FITUR BARU: Otomatis mencari tanggal pengamatan (Hari ke-29) dari Bulan & Tahun Hijriyah
+    function autoSetObservationDate() {
+      const hMonth = parseInt(document.getElementById('selectHijriMonth').value, 10);
+      const hYear = parseInt(document.getElementById('inputHijriYear').value, 10);
+      const lon = parseFloat(document.getElementById('inputLon').value) || 106.8272;
+
+      if (isNaN(hMonth) || isNaN(hYear)) return;
+
+      // Rumus Indeks Lunasi (k) Jean Meeus: k = 0 adalah Bulan Baru Januari 2000 (dekat 1 Syawal 1420 H)
+      const k = (hYear - 1) * 12 + hMonth - 16859;
+      const T = k / 1236.85;
+      const approxJd = 2451550.09766 + 29.530588861 * k + 0.00015437 * T * T;
+
+      // Dapatkan waktu Ijtimak akurat untuk bulan Hijriyah yang dipilih
+      const jdIjtima = refineConjunctionJd(approxJd);
+
+      // Konversi JD Ijtimak ke Tanggal Lokal (berdasarkan zona waktu pengamat)
+      const tz = getTimezoneInfo(lon);
+      const localMs = (jdIjtima - 2440587.5) * 86400000 + (tz.offset * 3600000);
+      const localDate = new Date(localMs);
+
+      const yyyy = localDate.getUTCFullYear();
+      const mm = String(localDate.getUTCMonth() + 1).padStart(2, '0');
+      const dd = String(localDate.getUTCDate()).padStart(2, '0');
+
+      document.getElementById('inputDate').value = `${yyyy}-${mm}-${dd}`;
+      hitungkanHisab();
+    }
+
+    // Geser tanggal pengamatan H-1 atau H+1 dengan cepat
+    function shiftDate(days) {
+      const dateInput = document.getElementById('inputDate');
+      if (!dateInput.value) return;
+      const [y, m, d] = dateInput.value.split('-').map(Number);
+      const dt = new Date(Date.UTC(y, m - 1, d + days));
+      const yyyy = dt.getUTCFullYear();
+      const mm = String(dt.getUTCMonth() + 1).padStart(2, '0');
+      const dd = String(dt.getUTCDate()).padStart(2, '0');
+      dateInput.value = `${yyyy}-${mm}-${dd}`;
+      hitungkanHisab();
+    }
 
     function getLocation() {
       if (navigator.geolocation) {
@@ -230,65 +549,57 @@
           (pos) => {
             document.getElementById('inputLat').value = pos.coords.latitude.toFixed(4);
             document.getElementById('inputLon').value = pos.coords.longitude.toFixed(4);
-            alert("Lokasi GPS berhasil ditemukan!");
+            hitungkanHisab();
           },
-          () => alert("Gagal mengambil lokasi GPS. Pastikan izin lokasi aktif!")
+          () => alert("Gagal mengambil lokasi GPS. Pastikan izin lokasi browser aktif!")
         );
-      } else { alert("Browser tidak mendukung GPS."); }
-    }
-
-    function toJulianDay(dObj) { return (dObj.getTime() / 86400000) + 2440587.5; }
-
-    function getEclipticDiff(jd) {
-      const D = jd - 2451545.0;
-      const g = (357.529 + 0.98560028 * D) % 360;
-      const q = (280.459 + 0.98564736 * D) % 360;
-      const L_sun = (q + 1.915 * Math.sin(g * Math.PI / 180) + 0.020 * Math.sin(2 * g * Math.PI / 180)) % 360;
-      const L_moon = (218.316 + 13.176396 * D) % 360;
-      const M_moon = (134.963 + 13.064993 * D) % 360;
-      const moonLon = L_moon + 6.289 * Math.sin(M_moon * Math.PI / 180);
-
-      let diff = (moonLon - L_sun) % 360;
-      if (diff < -180) diff += 360;
-      if (diff > 180) diff -= 360;
-      return diff;
-    }
-
-    function calculateIjtimaTime(targetDateVal) {
-      let baseDate = new Date(targetDateVal + 'T00:00:00Z');
-      let jd = toJulianDay(baseDate);
-      let bestJd = jd, minDiff = 999;
-      for (let hour = -12; hour <= 36; hour += 0.5) {
-        let testJd = jd + (hour / 24);
-        let diff = Math.abs(getEclipticDiff(testJd));
-        if (diff < minDiff) { minDiff = diff; bestJd = testJd; }
+      } else {
+        alert("Browser tidak mendukung fitur Geolocation.");
       }
-      for (let i = 0; i < 10; i++) {
-        let diff = getEclipticDiff(bestJd);
-        let hourCorrection = diff / 0.508;
-        bestJd -= (hourCorrection / 24);
-        if (Math.abs(hourCorrection) < 0.001) break; 
-      }
-      return new Date((bestJd - 2440587.5) * 86400000);
     }
 
-    function drawMoonVisual(elongation, alt) {
+    function drawMoonVisual(elongation, altMari, azDiff) {
       const canvas = document.getElementById('moonCanvas');
       const ctx = canvas.getContext('2d');
+      const cx = canvas.width / 2;
+      const cy = canvas.height / 2;
+      const r = 28;
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      if (alt <= 0) {
-        ctx.fillStyle = '#333';
-        ctx.beginPath(); ctx.arc(35, 35, 30, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#1e293b';
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.fill();
+
+      if (altMari <= 0) {
+        ctx.strokeStyle = '#ef4444';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(8, cy);
+        ctx.lineTo(canvas.width - 8, cy);
+        ctx.stroke();
         return;
       }
 
-      ctx.fillStyle = '#f1f5f9';
-      ctx.beginPath(); ctx.arc(35, 35, 28, -Math.PI/2, Math.PI/2, false); ctx.fill();
+      ctx.save();
+      ctx.translate(cx, cy);
+      const tiltAngle = (Math.PI / 2) + (azDiff * 0.04);
+      ctx.rotate(tiltAngle);
 
-      let shift = Math.max(2, 28 - (elongation * 1.5));
-      ctx.fillStyle = '#000';
-      ctx.beginPath(); ctx.arc(35 + shift, 35, 28, -Math.PI/2, Math.PI/2, false); ctx.fill();
+      ctx.fillStyle = '#f8fafc';
+      ctx.beginPath();
+      ctx.arc(0, 0, r, -Math.PI / 2, Math.PI / 2, false);
+      ctx.fill();
+
+      const phaseFraction = Math.min(elongation / 180, 1);
+      const innerR = r * Math.max(0.15, 1 - phaseFraction * 3.2);
+      ctx.fillStyle = '#1e293b';
+      ctx.beginPath();
+      ctx.ellipse(0, 0, innerR, r, 0, -Math.PI / 2, Math.PI / 2, false);
+      ctx.fill();
+
+      ctx.restore();
     }
 
     function hitungkanHisab() {
@@ -297,120 +608,181 @@
       const lon = parseFloat(document.getElementById('inputLon').value);
       const criterion = document.getElementById('inputCriterion').value;
 
-      if (!dateVal || isNaN(lat) || isNaN(lon)) { alert("Lengkapi data!"); return; }
+      if (!dateVal || isNaN(lat) || isNaN(lon)) return;
 
-      const ijtimaDateObj = calculateIjtimaTime(dateVal);
-      const optionsDate = { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'Asia/Jakarta' };
-      const optionsTime = { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'Asia/Jakarta' };
-      const ijtimaFormatted = `${ijtimaDateObj.toLocaleDateString('id-ID', optionsDate)}, jam ${ijtimaDateObj.toLocaleTimeString('id-ID', optionsTime)} WIB`;
+      const tz = getTimezoneInfo(lon);
+      const [year, month, day] = dateVal.split('-').map(Number);
+      const noonUtcMs = Date.UTC(year, month - 1, day, 12 - tz.offset, 0, 0);
+      const jdNoon = (noonUtcMs / 86400000) + 2440587.5;
 
-      const d = new Date(dateVal + 'T12:00:00Z');
-      const julianDay = toJulianDay(d);
-      const D = julianDay - 2451545.0;
+      // Hitung Waktu Terbenam Matahari (Ghurub) 2 iterasi
+      let sunNoon = getSunPosition(jdNoon);
+      const latRad = lat * DEG2RAD;
+      const h0Rad = -0.8333 * DEG2RAD;
 
-      const g = (357.529 + 0.98560028 * D) % 360;
-      const q = (280.459 + 0.98564736 * D) % 360;
-      const L_sun = (q + 1.915 * Math.sin(g * Math.PI / 180) + 0.020 * Math.sin(2 * g * Math.PI / 180)) % 360;
-      
-      // Kalkulasi Terbenam Matahari Presisi Standar BMKG / Kemenag
-      const latRad = lat * Math.PI / 180;
-      const sunDec = Math.asin(Math.sin(23.44 * Math.PI / 180) * Math.sin(L_sun * Math.PI / 180));
-      
-      const varY = Math.tan((23.44 / 2) * Math.PI / 180) ** 2;
-      const gRad = g * Math.PI / 180;
-      const qRad = q * Math.PI / 180;
-      const eotMin = 4 * (varY * Math.sin(2 * qRad) - 2 * 0.0167 * Math.sin(gRad) + 4 * 0.0167 * varY * Math.sin(gRad) * Math.cos(2 * qRad) - 0.5 * (varY ** 2) * Math.sin(4 * qRad)) * (180 / Math.PI);
-
-      const h0Rad = -0.8333 * Math.PI / 180;
-      let cosHA = (Math.sin(h0Rad) - Math.sin(latRad) * Math.sin(sunDec)) / (Math.cos(latRad) * Math.cos(sunDec));
+      let cosHA = (Math.sin(h0Rad) - Math.sin(latRad) * Math.sin(sunNoon.dec * DEG2RAD)) /
+                  (Math.cos(latRad) * Math.cos(sunNoon.dec * DEG2RAD));
       cosHA = Math.min(Math.max(cosHA, -1), 1);
-      
-      const hourAngleDeg = Math.acos(cosHA) * 180 / Math.PI;
-      const sunsetHours = 12 + (hourAngleDeg / 15) - ((lon - 105) / 15) - (eotMin / 60);
-      
-      const sunsetMin = Math.floor((sunsetHours % 1) * 60);
-      const sunsetSec = Math.floor((((sunsetHours % 1) * 60) % 1) * 60);
-      const sunsetFormatted = `${Math.floor(sunsetHours).toString().padStart(2, '0')}:${sunsetMin.toString().padStart(2, '0')}:${sunsetSec.toString().padStart(2, '0')} WIB`;
+      let haDeg = Math.acos(cosHA) * RAD2DEG;
 
-      const L_moon = (218.316 + 13.176396 * D) % 360;
-      const M_moon = (134.963 + 13.064993 * D) % 360;
-      const F_moon = (93.272 + 13.229350 * D) % 360;
+      let sunsetLocalHours = 12 + (haDeg / 15) - ((lon - (tz.offset * 15)) / 15) - (sunNoon.eot / 60);
+      let jdSunset = jdNoon + ((sunsetLocalHours - 12) / 24);
 
-      const moonLon = L_moon + 6.289 * Math.sin(M_moon * Math.PI / 180);
-      const moonLat = 5.128 * Math.sin(F_moon * Math.PI / 180);
+      let sunAtSunset = getSunPosition(jdSunset);
+      cosHA = (Math.sin(h0Rad) - Math.sin(latRad) * Math.sin(sunAtSunset.dec * DEG2RAD)) /
+              (Math.cos(latRad) * Math.cos(sunAtSunset.dec * DEG2RAD));
+      cosHA = Math.min(Math.max(cosHA, -1), 1);
+      haDeg = Math.acos(cosHA) * RAD2DEG;
+      sunsetLocalHours = 12 + (haDeg / 15) - ((lon - (tz.offset * 15)) / 15) - (sunAtSunset.eot / 60);
+      jdSunset = jdNoon + ((sunsetLocalHours - 12) / 24);
 
-      let moonAlt = (moonLon - L_sun) * Math.sin((90 - Math.abs(lat)) * Math.PI / 180) + (moonLat * 0.8);
-      let elongation = Math.abs(moonLon - L_sun);
-      if (elongation > 180) elongation = 360 - elongation;
+      const sunsetDateObj = fromJulianDay(jdSunset);
+      const optionsTime = { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: tz.tzString, hour12: false };
+      const optionsDate = { day: '2-digit', month: 'short', year: 'numeric', timeZone: tz.tzString };
+      const sunsetFormatted = `${sunsetDateObj.toLocaleTimeString('id-ID', optionsTime).replace(/\./g, ':')} ${tz.name}`;
 
-      if (moonAlt > 90) moonAlt = 180 - moonAlt;
-      if (moonAlt < -90) moonAlt = -180 - moonAlt;
+      // Hitung Waktu Ijtimak Terdekat
+      const jdIjtima = calculateIjtimaTime(jdSunset);
+      const ijtimaDateObj = fromJulianDay(jdIjtima);
+      const ijtimaFormatted = `${ijtimaDateObj.toLocaleDateString('id-ID', optionsDate)}, ${ijtimaDateObj.toLocaleTimeString('id-ID', optionsTime).replace(/\./g, ':')} ${tz.name}`;
 
-      let azDiff = (moonLon - L_sun) > 0 ? "Utara Matahari" : "Selatan Matahari";
+      // Identifikasi Bulan & Tahun Hijriyah dari siklus lunasi (k) terdekat secara otomatis
+      const kApprox = Math.round((jdIjtima - 2451550.09766) / 29.530588861);
+      const totalMonths = kApprox + 16859;
+      const calcHijriYear = Math.floor((totalMonths - 1) / 12) + 1;
+      const calcHijriMonth = ((totalMonths - 1) % 12) + 1;
+      const hijriMonthName = HIJRI_MONTH_NAMES[calcHijriMonth] || "Qomariyah";
 
-      let isPass = false, reason = "";
-      
-      if (moonAlt > 20 || elongation > 30) {
-        isPass = false; 
-        reason = "Tanggal pengamatan di luar fase hilal!";
+      // Sinkronkan juga dropdown jika masih berada di fase bulan tersebut
+      document.getElementById('selectHijriMonth').value = String(calcHijriMonth);
+      document.getElementById('inputHijriYear').value = String(calcHijriYear);
+      document.getElementById('targetBanner').innerText = `PENENTUAN AWAL 1 ${hijriMonthName.toUpperCase()} ${calcHijriYear} H`;
+
+      // Evaluasi Posisi Matahari & Bulan TEPAT SAAT GHURUB
+      sunAtSunset = getSunPosition(jdSunset);
+      const moonAtSunset = getMoonPosition(jdSunset);
+
+      const sunHoriz = equatorialToHorizontal(jdSunset, sunAtSunset.ra, sunAtSunset.dec, lat, lon);
+      const moonHoriz = equatorialToHorizontal(jdSunset, moonAtSunset.ra, moonAtSunset.dec, lat, lon);
+
+      const altHaqiqi = moonHoriz.alt;
+      const parallaxCorr = moonAtSunset.hp * Math.cos(Math.max(0, altHaqiqi) * DEG2RAD);
+      const refractionCorr = altHaqiqi > -1 ? 0.0167 / Math.tan((altHaqiqi + (7.31 / (altHaqiqi + 4.4))) * DEG2RAD) : 0;
+      const altMari = altHaqiqi - parallaxCorr + Math.max(0, refractionCorr);
+
+      const dLonRad = (moonAtSunset.lon - sunAtSunset.lon) * DEG2RAD;
+      const moonLatRad = moonAtSunset.lat * DEG2RAD;
+      const cosElong = Math.cos(moonLatRad) * Math.cos(dLonRad);
+      const elongation = Math.acos(Math.min(Math.max(cosElong, -1), 1)) * RAD2DEG;
+
+      const azDiff = norm180(moonHoriz.az - sunHoriz.az);
+      const posCompass = azDiff >= 0 ? "Utara Matahari" : "Selatan Matahari";
+
+      // Evaluasi Kriteria
+      const diffDaysFromIjtima = jdSunset - jdIjtima;
+      const isIjtimaBeforeSunset = diffDaysFromIjtima > 0;
+      const isNearConjunction = Math.abs(diffDaysFromIjtima) <= 1.65;
+
+      let statusType = "fail";
+      let reason = "";
+
+      if (!isNearConjunction) {
+        statusType = "warn";
+        const ageDays = ((diffDaysFromIjtima % 29.53059 + 29.53059) % 29.53059).toFixed(1);
+        reason = `Tanggal yang dipilih berada di luar fase pengamatan hilal (Bulan berumur ±${ageDays} hari). Gunakan dropdown Hijriyah di atas untuk kembali ke hari ke-29.`;
+      } else if (!isIjtimaBeforeSunset) {
+        statusType = "fail";
+        const hoursAfter = Math.abs(diffDaysFromIjtima * 24).toFixed(1);
+        reason = `Ijtimak terjadi ${hoursAfter} jam SETELAH Matahari terbenam (Ijtimak Ba'dal Ghurub). Syarat mutlak belum terpenuhi (klik tombol H+1 untuk cek keesokan harinya).`;
       } else if (criterion === "MABIMS") {
-        isPass = (moonAlt >= 3.0 && elongation >= 6.4);
-        reason = isPass ? "Memenuhi Kriteria MABIMS Baru" : "Belum Memenuhi MABIMS (Tinggi < 3° atau Elongasi < 6.4°)";
+        if (altMari >= 3.0 && elongation >= 6.4) {
+          statusType = "pass";
+          reason = `Memenuhi Kriteria MABIMS Baru: Ijtimak sebelum Ghurub, Tinggi Hilal Mar'i ${altMari.toFixed(2)}° (≥ 3°), dan Elongasi ${elongation.toFixed(2)}° (≥ 6.4°).`;
+        } else {
+          statusType = "fail";
+          let kurang = [];
+          if (altMari < 3.0) kurang.push(`Tinggi Mar'i ${altMari.toFixed(2)}° < 3°`);
+          if (elongation < 6.4) kurang.push(`Elongasi ${elongation.toFixed(2)}° < 6.4°`);
+          reason = `Belum memenuhi Kriteria MABIMS Baru (${kurang.join(" dan ")}).`;
+        }
       } else if (criterion === "WUJUDUL_HILAL") {
-        isPass = (moonAlt > 0);
-        reason = isPass ? "Memenuhi Kriteria Wujudul Hilal Lokal" : "Bulan Masih Di Bawah Ufuk";
+        if (altMari > 0) {
+          statusType = "pass";
+          reason = `Memenuhi Kriteria Wujudul Hilal: Ijtimak sebelum Ghurub dan Bulan berada di atas ufuk (${altMari.toFixed(2)}° > 0°).`;
+        } else {
+          statusType = "fail";
+          reason = `Belum memenuhi Wujudul Hilal: Posisi Bulan saat Ghurub masih di bawah ufuk (${altMari.toFixed(2)}°).`;
+        }
       }
 
-      const obsDate = new Date(dateVal + 'T12:00:00Z');
-      const optionsDay = { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' };
+      const obsDate = new Date(Date.UTC(year, month - 1, day, 12, 0, 0));
+      const optionsDay = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' };
 
       const nextDay = new Date(obsDate);
-      nextDay.setDate(obsDate.getDate() + 1);
+      nextDay.setUTCDate(obsDate.getUTCDate() + 1);
       const nextDayStr = nextDay.toLocaleDateString('id-ID', optionsDay);
 
       const dayAfterNext = new Date(obsDate);
-      dayAfterNext.setDate(obsDate.getDate() + 2);
+      dayAfterNext.setUTCDate(obsDate.getUTCDate() + 2);
       const dayAfterNextStr = dayAfterNext.toLocaleDateString('id-ID', optionsDay);
 
       document.getElementById('resIjtima').innerText = ijtimaFormatted;
       document.getElementById('resSunset').innerText = sunsetFormatted;
-      document.getElementById('resAlt').innerText = moonAlt.toFixed(2) + "°";
-      document.getElementById('resElongation').innerText = elongation.toFixed(2) + "°";
-      document.getElementById('resAzimuth').innerText = azDiff;
+      document.getElementById('resAlt').innerText = `${altMari.toFixed(2)}° (Haqiqi: ${altHaqiqi.toFixed(2)}°)`;
+      document.getElementById('resElongation').innerText = `${elongation.toFixed(2)}°`;
+      document.getElementById('resAzimuth').innerText = `${moonHoriz.az.toFixed(1)}° (${posCompass})`;
 
-      drawMoonVisual(elongation, moonAlt);
+      drawMoonVisual(elongation, altMari, azDiff);
 
       const badge = document.getElementById('statusBadge');
       const container = document.getElementById('resultContainer');
       container.style.display = "block";
 
-      if (isPass) {
+      if (statusType === "pass") {
         badge.className = "status-badge status-pass";
         badge.innerHTML = `
-          <i class="fa-solid fa-circle-check"></i> MULAI NANTI MALAM SUDAH MASUK TANGGAL 1 BULAN BARU<br>
-          <small style="font-weight:normal; display:block; margin-top:4px;">
-            Awal bulan Qomariyah dimulai saat Maghrib nanti. Hari pertama Masehi: <strong>${nextDayStr}</strong>.<br>
-            <em>(${reason})</em>
+          <i class="fa-solid fa-circle-check"></i> 1 ${hijriMonthName.toUpperCase()} ${calcHijriYear} H JATUH PADA ESOK HARI<br>
+          <small style="font-weight:normal; display:block; margin-top:6px;">
+            Mulai masuk tanggal 1 ${hijriMonthName} saat Maghrib hari ini. Hari pertama Masehi: <strong>${nextDayStr}</strong>.<br>
+            <em style="opacity:0.9; display:block; margin-top:4px;">Alasan: ${reason}</em>
           </small>`;
-      } else {
+      } else if (statusType === "fail") {
         badge.className = "status-badge status-fail";
         badge.innerHTML = `
-          <i class="fa-solid fa-circle-xmark"></i> NANTI MALAM BELUM MASUK TANGGAL 1 BULAN BARU<br>
-          <small style="font-weight:normal; display:block; margin-top:4px;">
-            Umur bulan digenapkan (Istikmal) 30 hari. Tanggal 1 baru dimulai saat Maghrib besok (<strong>${dayAfterNextStr}</strong>).<br>
-            <em>(${reason})</em>
+          <i class="fa-solid fa-circle-xmark"></i> BELUM MASUK 1 ${hijriMonthName.toUpperCase()} ${calcHijriYear} H (ISTIKMAL)<br>
+          <small style="font-weight:normal; display:block; margin-top:6px;">
+            Bulan berjalan digenapkan 30 hari. <strong>1 ${hijriMonthName} ${calcHijriYear} H</strong> jatuh pada lusa: <strong>${dayAfterNextStr}</strong>.<br>
+            <em style="opacity:0.9; display:block; margin-top:4px;">Alasan: ${reason}</em>
+          </small>`;
+      } else {
+        badge.className = "status-badge status-warn";
+        badge.innerHTML = `
+          <i class="fa-solid fa-triangle-exclamation"></i> TANGGAL DI LUAR PENGAMATAN AWAL BULAN<br>
+          <small style="font-weight:normal; display:block; margin-top:6px;">
+            ${reason}
           </small>`;
       }
     }
 
     function downloadReport() {
-      html2canvas(document.getElementById("captureArea")).then(canvas => {
+      const btn = document.getElementById("btnDownload");
+      btn.style.display = "none";
+      html2canvas(document.getElementById("captureArea"), {
+        backgroundColor: "#0b0f19",
+        scale: 2
+      }).then(canvas => {
+        btn.style.display = "flex";
         let link = document.createElement('a');
-        link.download = 'Laporan_Hisab_fatur62_V2.png';
-        link.href = canvas.toDataURL();
+        link.download = `Hisab_${document.getElementById('selectHijriMonth').options[document.getElementById('selectHijriMonth').selectedIndex].text.replace(/\s+/g, '_')}_${document.getElementById('inputHijriYear').value}H_fatur62.png`;
+        link.href = canvas.toDataURL("image/png");
         link.click();
       });
     }
-  </script>
-</body>
-</html>
+
+    // Inisialisasi awal: otomatis cari tahun Hijriyah saat ini dan tampilkan 1 Ramadhan terdekat
+    window.addEventListener('DOMContentLoaded', () => {
+      const nowJd = toJulianDay(new Date());
+      const approxK = Math.round((nowJd - 2451550.09766) / 29.530588861);
+      const currentHijriYear = Math.floor((approxK + 16859 - 1) / 12) + 1;
+      document.getElementById('inputHijriYear').value = currentHijriYear;
+      autoSetObservationDate();
